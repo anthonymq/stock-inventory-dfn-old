@@ -1,0 +1,48 @@
+{
+    "canisters": {
+      "BigMap": {
+        "main": "vendor/motoko-bigmap/app/Main.mo",
+        "type": "motoko"
+      },
+      "SegCan": {
+        "main": "vendor/motoko-bigmap/app/SegCan.mo",
+        "type": "motoko"
+      },
+      "stock": {
+        "main": "src_mo/stock/main.mo",
+        "type": "motoko"
+      },
+      "gomoku_assets": {
+        "dependencies": [
+          "stock"
+        ],
+        "frontend": {
+          "entrypoint": "src/main.js",
+          "output": "canisters/gomoku_assets/assets"
+        },
+        "source": [
+          "dist"
+        ],
+        "type": "assets"
+      }
+    },
+    "defaults": {
+      "build": {
+        "packtool": "vessel-macos sources"
+      }
+    },
+    "dfx": "0.6.10",
+    "networks": {
+      "local": {
+        "bind": "0.0.0.0:8000",
+        "type": "ephemeral"
+      },
+      "tungsten": {
+        "providers": [
+          "https://gw.dfinity.network"
+        ],
+        "type": "persistent"
+      }
+    },
+    "version": 1
+  }
