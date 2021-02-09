@@ -2,12 +2,41 @@
 import AssocList "mo:base/AssocList";
 import Error "mo:base/Error";
 import List "mo:base/List";
-import Prim "mo:prim";
+import Database "database/database";
+import Types "database/types";
+import Utils "database/utils";
 
-actor {
+shared({ caller = initializer }) actor class() {
+    var directory: Database.Directory = Database.Directory();
+
+    type Profile = Types.Profile;
+    type NewProfile = Types.NewProfile;
+    type UserId = Types.UserId;
+
+    // Healthcheck
+    public func healthcheck(): async Bool { true };
+
+    // Profiles
+    public shared(msg) func create(profile: NewProfile): async () {
+        directory.createOne(msg.caller, profile);
+    };
+
+    public shared(msg) func update(profile: Profile): async () {
+        // if(Utils.hasAccess(msg.caller, profile)) {
+        directory.updateOne(profile.id, profile);
+        // };
+    };
+
+    public query func get(userId: UserId): async Profile {
+        Utils.getProfile(directory, userId)
+    };
+
+    public query func search(term: Text): async [Profile] {
+        directory.findBy(term)
+    };
 
     // Establish role-based greetings to display
-    public shared { caller } func greet(name : Text) : async Text {
+    public shared({ caller }) func greet(name : Text) : async Text {
         if (has_permission(caller, #assign_role)) {
             return "Hello, " # name # ". You have a role with administrative privileges."
         } else if (has_permission(caller, #lowest)) {
@@ -28,8 +57,6 @@ actor {
         #assign_role;
         #lowest;
     };
-
-    private let initializer : Principal = Prim.caller();
 
     private stable var roles: AssocList.AssocList<Principal, Role> = List.nil();
     private stable var role_requests: AssocList.AssocList<Principal, Role> = List.nil();
@@ -64,7 +91,7 @@ actor {
     };
 
     // Assign a new role to a principal
-    public shared { caller } func assign_role( assignee: Principal, new_role: ?Role ) : async () {
+    public shared({ caller }) func assign_role( assignee: Principal, new_role: ?Role ) : async () {
         await require_permission( caller, #assign_role );
 
         switch new_role {
@@ -80,31 +107,31 @@ actor {
         role_requests := AssocList.replace<Principal, Role>(role_requests, assignee, principal_eq, null).0;
     };
 
-    public shared { caller } func request_role( role: Role ) : async Principal {
+    public shared({ caller }) func request_role( role: Role ) : async Principal {
         role_requests := AssocList.replace<Principal, Role>(role_requests, caller, principal_eq, ?role).0;
         return caller;
     };
 
     // Return the principal of the message caller/user identity
-    public shared { caller } func callerPrincipal() : async Principal {
+    public shared({ caller }) func callerPrincipal() : async Principal {
         return caller;
     };
 
     // Return the role of the message caller/user identity
-    public shared { caller } func my_role() : async ?Role {
+    public shared({ caller }) func my_role() : async ?Role {
         return get_role(caller);
     };
 
-    public shared { caller } func my_role_request() : async ?Role {
+    public shared({ caller }) func my_role_request() : async ?Role {
         AssocList.find<Principal, Role>(role_requests, caller, principal_eq);
     };
 
-    public shared { caller } func get_role_requests() : async List.List<(Principal,Role)> {
+    public shared({ caller }) func get_role_requests() : async List.List<(Principal,Role)> {
         await require_permission( caller, #assign_role );
         return role_requests;
     };
 
-    public shared { caller } func get_roles() : async List.List<(Principal,Role)> {
+    public shared({ caller }) func get_roles() : async List.List<(Principal,Role)> {
         await require_permission( caller, #assign_role );
         return roles;
     };

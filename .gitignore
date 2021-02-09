@@ -15,6 +15,7 @@ yarn.lock
 
 # Build artifacts
 canisters/
+.vessel/
 
 # dfx temporary files
 .dfx/

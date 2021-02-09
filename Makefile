@@ -3,7 +3,7 @@ MODE ?= install
 CANISTER_IDS:=.dfx/$(PROVIDER)/canister_ids.json
 DFX_CFG:=dfx.json
 
-PROJECT=gomoku
+PROJECT=stock
 OBJ_DIR:=.dfx/$(PROVIDER)/canisters
 CANISTER_TARGET:=$(OBJ_DIR)/$(PROJECT)/$(PROJECT).wasm
 
@@ -32,7 +32,7 @@ $(CANISTER_IDS): $(DFX_CFG)
 	dfx canister --network $(PROVIDER) create --all
 
 $(CANISTER_TARGET): $(CANISTER_IDS) $(MO_SRC) $(DFX_CFG)
-	dfx build --network $(PROVIDER) --skip-frontend
+	dfx build --network $(PROVIDER) 
 
 $(ASSETS_TARGET) $(JS_TARGET) : $(CANISTER_IDS) $(MO_SRC) $(JS_SRC) $(JS_CFG) $(DFX_CFG) node_modules
 	dfx build --network $(PROVIDER)

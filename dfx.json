@@ -1,24 +1,16 @@
 {
     "canisters": {
-      "BigMap": {
-        "main": "vendor/motoko-bigmap/app/Main.mo",
-        "type": "motoko"
-      },
-      "SegCan": {
-        "main": "vendor/motoko-bigmap/app/SegCan.mo",
-        "type": "motoko"
-      },
       "stock": {
         "main": "src_mo/stock/main.mo",
         "type": "motoko"
       },
-      "gomoku_assets": {
+      "stock_assets": {
         "dependencies": [
           "stock"
         ],
         "frontend": {
           "entrypoint": "src/main.js",
-          "output": "canisters/gomoku_assets/assets"
+          "output": "canisters/stock_assets/assets"
         },
         "source": [
           "dist"
@@ -31,7 +23,7 @@
         "packtool": "vessel-macos sources"
       }
     },
-    "dfx": "0.6.10",
+    "dfx": "0.6.22",
     "networks": {
       "local": {
         "bind": "0.0.0.0:8000",

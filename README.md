@@ -16,3 +16,6 @@ https://sdk.dfinity.org/docs/developers-guide/tutorials/access-control.html
 - recuperer le canisterId de SegCan
 - le c/c dans initNext de Bigmap
 - c'est bon
+
+# Utils
+DFX_VERSION=0.6.22 sh -ci "$(curl -fsSL https://sdk.dfinity.org/install.sh)"
